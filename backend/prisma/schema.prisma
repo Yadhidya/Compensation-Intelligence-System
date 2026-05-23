@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Salary {
+  id                String   @id @default(uuid())
+  company           String   // Normalized: trimmed, lowercase for queries
+  companyDisplay    String   @map("company_display") // Original casing for UI, e.g., "Google"
+  role              String   // Normalized and trimmed
+  level             String   // Normalized level, e.g., "L4", "Senior"
+  location          String   // Normalized location, e.g., "Mountain View, CA"
+  experienceYears   Float    @map("experience_years")
+  baseSalary        Float    @map("base_salary")
+  bonus             Float    @default(0) @map("bonus")
+  stock             Float    @default(0) @map("stock")
+  totalCompensation Float    @map("total_compensation")
+  confidenceScore   Float    @default(1.0) @map("confidence_score")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([company])
+  @@index([role])
+  @@index([location])
+  @@index([totalCompensation])
+  @@map("salaries")
+}
